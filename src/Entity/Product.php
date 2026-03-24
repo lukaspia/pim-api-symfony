@@ -13,13 +13,19 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  *
  */
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['product:read']],
+)]
 #[UniqueEntity(fields: ['sku'], message: 'Produkt o tym SKU już istnieje.')]
+#[Groups(['product:read'])]
 class Product
 {
     /**
@@ -63,6 +69,14 @@ class Product
      */
     #[ORM\Column(length: 20, enumType: ProductStatus::class)]
     private ProductStatus $status = ProductStatus::ACTIVE;
+
+    #[ORM\OneToMany(targetEntity: PriceHistory::class, mappedBy: 'product', orphanRemoval: true)]
+    private Collection $priceHistories;
+
+    public function __construct()
+    {
+        $this->priceHistories = new ArrayCollection();
+    }
 
     /**
      * @return int|null
@@ -160,5 +174,10 @@ class Product
     {
         $this->status = $status;
         return $this;
+    }
+
+    public function getPriceHistories(): Collection
+    {
+        return $this->priceHistories;
     }
 }

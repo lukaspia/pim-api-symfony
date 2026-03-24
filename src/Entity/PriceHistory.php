@@ -8,6 +8,7 @@ namespace App\Entity;
 use App\Repository\PriceHistoryRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  *
@@ -34,18 +35,21 @@ class PriceHistory
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups(['product:read'])]
     private ?string $oldPrice = null;
 
     /**
      * @var string|null
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups(['product:read'])]
     private ?string $newPrice = null;
 
     /**
      * @var \DateTimeImmutable
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Groups(['product:read'])]
     private \DateTimeImmutable $changedAt;
 
     /**
