@@ -5,10 +5,16 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Delete;
 use App\Enum\Currency;
 use App\Enum\ProductStatus;
 use App\Repository\ProductRepository;
 use ApiPlatform\Metadata\ApiResource;
+use App\State\ProductRemoveProcessor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -16,13 +22,19 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Attribute\Groups;
 use App\Validator as AppAssert;
-
 /**
  *
  */
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['product:read']],
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(),
+        new Patch(),
+        new Delete(processor: ProductRemoveProcessor::class),
+    ],
+    normalizationContext: ['groups' => ['product:read']]
 )]
 #[Groups(['product:read'])]
 class Product
