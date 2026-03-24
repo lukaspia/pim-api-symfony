@@ -2,21 +2,19 @@
 
 namespace App\EventListener;
 
-use App\Entity\PriceHistory;
 use App\Entity\Product;
+use App\Service\ProductPriceManagerInterface;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Events;
-use App\Message\ProductPriceChanged;
-use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  *
  */
 #[AsDoctrineListener(event: Events::postUpdate, connection: 'default')]
-class PriceHistoryListener
+readonly class PriceHistoryListener
 {
-    public function __construct(private MessageBusInterface $bus)
+    public function __construct(private ProductPriceManagerInterface $priceManager)
     {
     }
 
@@ -32,27 +30,16 @@ class PriceHistoryListener
             return;
         }
 
-        $em = $args->getObjectManager();
-        $changeSet = $em->getUnitOfWork()->getEntityChangeSet($entity);
+        $changeSet = $args->getObjectManager()
+            ->getUnitOfWork()
+            ->getEntityChangeSet($entity);
 
-        if (!isset($changeSet['price'])) {
-            return;
+        if (isset($changeSet['price'])) {
+            $this->priceManager->recordPriceChange(
+                $entity,
+                (string)$changeSet['price'][0],
+                (string)$changeSet['price'][1]
+            );
         }
-
-        $history = new PriceHistory();
-        $history->setProduct($entity);
-        $history->setOldPrice((string)$changeSet['price'][0]);
-        $history->setNewPrice((string)$changeSet['price'][1]);
-
-        $em->persist($history);
-        $em->flush();
-
-        $this->bus->dispatch(
-            new ProductPriceChanged(
-                $history->getProduct()->getId(),
-                (float)$history->getOldPrice(),
-                (float)$history->getNewPrice()
-            )
-        );
     }
 }
