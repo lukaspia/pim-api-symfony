@@ -7,6 +7,8 @@ use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Events;
+use App\Message\ProductPriceChanged;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  *
@@ -14,6 +16,10 @@ use Doctrine\ORM\Events;
 #[AsDoctrineListener(event: Events::postUpdate, connection: 'default')]
 class PriceHistoryListener
 {
+    public function __construct(private MessageBusInterface $bus)
+    {
+    }
+
     /**
      * @param \Doctrine\ORM\Event\PostUpdateEventArgs $args
      * @return void
@@ -40,5 +46,13 @@ class PriceHistoryListener
 
         $em->persist($history);
         $em->flush();
+
+        $this->bus->dispatch(
+            new ProductPriceChanged(
+                $history->getProduct()->getId(),
+                (float)$history->getOldPrice(),
+                (float)$history->getNewPrice()
+            )
+        );
     }
 }
