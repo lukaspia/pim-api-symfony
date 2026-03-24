@@ -5,6 +5,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
@@ -34,8 +36,12 @@ use App\Validator as AppAssert;
         new Patch(),
         new Delete(processor: ProductRemoveProcessor::class),
     ],
-    normalizationContext: ['groups' => ['product:read']]
+    normalizationContext: ['groups' => ['product:read']],
+    paginationClientItemsPerPage: true,
+    paginationItemsPerPage: 2, //W celu testowym
+    paginationMaximumItemsPerPage: 100,
 )]
+#[ApiFilter(SearchFilter::class, properties: ['status' => 'exact'])]
 #[Groups(['product:read'])]
 class Product
 {
