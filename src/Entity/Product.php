@@ -11,11 +11,11 @@ use App\Repository\ProductRepository;
 use ApiPlatform\Metadata\ApiResource;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Attribute\Groups;
+use App\Validator as AppAssert;
 
 /**
  *
@@ -24,7 +24,6 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource(
     normalizationContext: ['groups' => ['product:read']],
 )]
-#[UniqueEntity(fields: ['sku'], message: 'Produkt o tym SKU już istnieje.')]
 #[Groups(['product:read'])]
 class Product
 {
@@ -46,8 +45,9 @@ class Product
     /**
      * @var string|null
      */
-    #[ORM\Column(length: 255, unique: true)]
+    #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[AppAssert\UniqueActiveSku]
     private ?string $sku = null;
 
     /**
@@ -55,7 +55,7 @@ class Product
      */
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     #[Assert\NotBlank]
-    #[Assert\PositiveOrZero]
+    #[Assert\GreaterThan(0, message: 'Cena musi być większa od zera.')]
     private ?string $price = null;
 
     /**
@@ -70,7 +70,7 @@ class Product
     #[ORM\Column(length: 20, enumType: ProductStatus::class)]
     private ProductStatus $status = ProductStatus::ACTIVE;
 
-    #[ORM\OneToMany(targetEntity: PriceHistory::class, mappedBy: 'product', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: PriceHistory::class, mappedBy: 'product', fetch: 'EAGER', orphanRemoval: true)]
     private Collection $priceHistories;
 
     public function __construct()
