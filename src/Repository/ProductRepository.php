@@ -11,11 +11,19 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ProductRepository extends ServiceEntityRepository
 {
+    /**
+     * @param \Doctrine\Persistence\ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Product::class);
     }
 
+    /**
+     * @param string $sku
+     * @param int|null $excludeId
+     * @return \App\Entity\Product|null
+     */
     public function findActiveBySku(string $sku, ?int $excludeId = null): ?Product
     {
         $qb = $this->createQueryBuilder('p')

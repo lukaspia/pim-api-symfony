@@ -91,11 +91,17 @@ class Product
     #[ORM\OneToMany(targetEntity: PriceHistory::class, mappedBy: 'product', fetch: 'EAGER', orphanRemoval: true)]
     private Collection $priceHistories;
 
+    /**
+     * @var int|null
+     */
     #[ORM\Column(type: 'integer')]
     #[ORM\Version]
     #[Groups(['product:read', 'product:write'])]
     private ?int $version = null;
 
+    /**
+     *
+     */
     public function __construct()
     {
         $this->priceHistories = new ArrayCollection();
@@ -199,16 +205,26 @@ class Product
         return $this;
     }
 
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
     public function getPriceHistories(): Collection
     {
         return $this->priceHistories;
     }
 
+    /**
+     * @param int $version
+     * @return void
+     */
     public function setVersion(int $version): void
     {
         $this->version = $version;
     }
 
+    /**
+     * @return int|null
+     */
     public function getVersion(): ?int
     {
         return $this->version;

@@ -130,6 +130,10 @@ class PriceHistory
         return $this->changedAt;
     }
 
+    /**
+     * @param \DateTimeImmutable $changedAt
+     * @return $this
+     */
     public function setChangedAt(\DateTimeImmutable $changedAt): static
     {
         $this->changedAt = $changedAt;

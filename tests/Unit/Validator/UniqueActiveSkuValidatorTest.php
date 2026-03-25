@@ -61,7 +61,7 @@ class UniqueActiveSkuValidatorTest extends TestCase
         $sku = 'UNIQUE-SKU';
         $constraint = new UniqueActiveSku();
 
-        $repository = $this->createStub(ProductRepository::class); // stub, nie mock
+        $repository = $this->createStub(ProductRepository::class);
         $repository->method('findActiveBySku')->willReturn(null);
 
         $validator = new UniqueActiveSkuValidator($repository);

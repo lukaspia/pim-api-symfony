@@ -15,7 +15,8 @@ readonly class ProductRemoveProcessor implements ProcessorInterface
 {
     public function __construct(
         private EntityManagerInterface $entityManager
-    ) {}
+    ) {
+    }
 
     /**
      * @param Product $data
