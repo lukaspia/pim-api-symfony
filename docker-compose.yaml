@@ -16,6 +16,19 @@ services:
       context: .
       dockerfile: docker/php/Dockerfile
     container_name: pim_php
+    command: >
+        sh -c "
+          echo '--- STARTING AUTO SETUP ---' &&
+          git config --global --add safe.directory /var/www/html &&
+          composer install &&
+          chmod -R +x bin/ &&
+          bin/console doctrine:database:create --if-not-exists &&
+          bin/console doctrine:migrations:migrate --no-interaction &&
+          bin/console doctrine:database:create --env=test --if-not-exists &&
+          bin/console doctrine:migrations:migrate --env=test --no-interaction &&
+          echo '--- SETUP FINISHED, STARTING PHP-FPM ---' &&
+          php-fpm
+        "
     volumes:
       - .:/var/www/html
     depends_on:

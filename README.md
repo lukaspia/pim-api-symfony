@@ -11,9 +11,9 @@ Niestety nie wyrobiłem się ze wszystkim w przewidzianych 4h. To, czego nie uda
 
 - Dla currency i statusów zastosowałem enumy, ponieważ eliminują ryzyku wpisania błędnych wartości, ułatwiają walidację i stanowią źródło prawdy dla dostępnych opcji z możliwością wykorzystania w różnych miejscach w kodzie.
 
-- Wykorzystałem Listnera do zmiany ceny, dzięki czemu mam pewność, że historia ceny zostanie zawsze zapisana, niezależnie od źródła zmiany ceny, a więc czy przez API, CLI, panele administracyjne itd. Stanowi to również odpowiedź na potrzebę wyrażoną: "System zarządza katalogiem produktów, które są synchronizowane z różnymi kanałami sprzedaży"
+- Wykorzystałem listnera do zmiany ceny, dzięki czemu mam pewność, że historia ceny zostanie zawsze zapisana, niezależnie od źródła zmiany ceny, a więc czy przez API, CLI, panele administracyjne itd. Stanowi to również odpowiedź na potrzebę wyrażoną: "System zarządza katalogiem produktów, które są synchronizowane z różnymi kanałami sprzedaży"
 
-- Sama logika zmiany ceny została wydzielona do osobnego serwisu ProductPriceManager, co ułatwia testowanie, pozwala na reużywalność kodu i podąża za zasadą single responsible.
+- Sama logika zmiany ceny została wydzielona do osobnego serwisu ProductPriceManager, co ułatwia testowanie, pozwala na reużywalność kodu i podąża za zasadą single responsibility.
 
 - Do obsługi współbieżności zastosowałem pole version w encji produktu, które automatycznie inkrementuje się po aktualizacji zasobu. Proste i skuteczne zabezpieczenie przed aktualizacją wcześniej zaktualizowanego zasobu.
 
@@ -26,8 +26,7 @@ Niestety nie wyrobiłem się ze wszystkim w przewidzianych 4h. To, czego nie uda
 ## Instalacja
 
 ```shell
-docker compose up -d
-make install
+docker compose up
 ```
 
 ## Test
