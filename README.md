@@ -27,7 +27,7 @@ Niestety nie wyrobiłem się ze wszystkim w przewidzianych 4h. To, czego nie uda
 
 ```shell
 docker compose up -d
-make migrate
+make install
 ```
 
 ## Test
