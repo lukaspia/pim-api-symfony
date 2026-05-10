@@ -1,9 +1,5 @@
-# pim-api-symfony
+# pim-api-symfony (recruitment task)
 Product Information Management (PIM) service with price evolution auditing and soft-delete capabilities.
-
-## Słowo wstępu
-
-Niestety nie wyrobiłem się ze wszystkim w przewidzianych 4h. To, czego nie udało się zrobić w tym czasie to obsługa współbieżności oraz testy. Mimo wszystko postanowiłem dokończyć ten ostatni punkt zadania po czasie oraz napisać przynajmniej przykładowe testy. 
 
 ## Decyzje architektoniczne
 
